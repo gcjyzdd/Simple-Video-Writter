@@ -9,21 +9,23 @@
 namespace cv {
 class VideoWriter;
 class Mat;
-}  // namespace cv
+} // namespace cv
 
 namespace sim {
 
 class VideoWriterWrapper {
- public:
-  VideoWriterWrapper(const std::string& filename, int width, int height,
+public:
+  VideoWriterWrapper(const std::string &filename, int width, int height,
                      int fps);
   ~VideoWriterWrapper();
 
-  void addFrame(const uint8_t* data);
+  void addFrame(const uint8_t *data);
+
+  void addFrameFlipY(const uint8_t *data);
 
   void finish();
 
- private:
+private:
   std::unique_ptr<cv::VideoWriter> mVid;
   std::unique_ptr<cv::Mat> mMatBuf;
 
@@ -33,4 +35,4 @@ class VideoWriterWrapper {
   int fps;
   std::string mFilename;
 };
-}  // namespace sim
+} // namespace sim

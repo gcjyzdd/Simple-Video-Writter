@@ -2,16 +2,16 @@
 #include "simulator/vedeowriter.h"
 
 struct VideoWriter_t {
-  sim::VideoWriterWrapper* data{nullptr};
+  sim::VideoWriterWrapper *data{nullptr};
 };
 
-VideoWriterHandle videoWriterCreate(const char* fileName, int width, int height,
-                                    int fps, int* err) {
+VideoWriterHandle videoWriterCreate(const char *fileName, int width, int height,
+                                    int fps, int *err) {
   VideoWriterHandle handle = new VideoWriter_t();
 
   try {
     handle->data = new sim::VideoWriterWrapper(fileName, width, height, fps);
-  } catch (std::system_error&) {
+  } catch (std::system_error &) {
     *err = 1;
   }
 
@@ -22,8 +22,13 @@ VideoWriterHandle videoWriterCreate(const char* fileName, int width, int height,
 
 void videoWriterDestroy(VideoWriterHandle handle) { delete handle->data; }
 
-int videoWriterAddFrame(VideoWriterHandle handle, const char* data) {
-  handle->data->addFrame((const uint8_t*)data);
+int videoWriterAddFrame(VideoWriterHandle handle, const char *data) {
+  handle->data->addFrame((const uint8_t *)data);
+  return 0;
+}
+
+int videoWriterAddFrameFlipY(VideoWriterHandle handle, const char *data) {
+  handle->data->addFrameFlipY((const uint8_t *)data);
   return 0;
 }
 

@@ -1,26 +1,28 @@
 #include "simulator/vedeowriter.h"
+#include <cstdint>
 #include <cstring>
-#include <opencv2/core.hpp>     // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui.hpp>  // Video write
+#include <opencv2/core.hpp>    // Basic OpenCV structures (cv::Mat)
+#include <opencv2/highgui.hpp> // Video write
+#include <string>
 
 namespace {
 std::ofstream logFile;
 
-void Log(const std::string& str) {
+void Log(const std::string &str) {
   logFile.open("VideoIO.log", std::ofstream::app);
   logFile.write(str.c_str(), str.size());
   logFile.close();
 }
 
-void Debug(const std::string& str, int err) {
+void Debug(const std::string &str, int err) {
   Log(str + " error code:" + std::to_string(err));
 }
-}  // namespace
+} // namespace
 
 namespace sim {
 using namespace std;
 
-VideoWriterWrapper::VideoWriterWrapper(const std::string& filename, int width,
+VideoWriterWrapper::VideoWriterWrapper(const std::string &filename, int width,
                                        int height, int fps)
     : mWidth{width}, mHeight{height}, mFilename{filename} {
   // int fourcc = cv::VideoWriter::fourcc('X', '2', '6', '4');
@@ -35,7 +37,19 @@ VideoWriterWrapper::VideoWriterWrapper(const std::string& filename, int width,
 
 VideoWriterWrapper::~VideoWriterWrapper() {}
 
-void VideoWriterWrapper::addFrame(const uint8_t* data) {
+void VideoWriterWrapper::addFrame(const uint8_t *data) {
+  size_t base;
+  // rgb to bgr
+  for (size_t i = 0; i < mHeight; ++i)
+    for (size_t j = 0; j < mWidth; ++j) {
+      base = 3 * (i * mWidth + j);
+      mMatBuf->at<cv::Vec3b>(i, j) =
+          cv::Vec3b{data[base + 2], data[base + 1], data[base]};
+    }
+  mVid->write(*mMatBuf);
+}
+
+void VideoWriterWrapper::addFrameFlipY(const uint8_t *data) {
   size_t base;
   // flip up side down and rgb to bgr
   for (size_t i = 0; i < mHeight; ++i)
@@ -51,4 +65,4 @@ void VideoWriterWrapper::addFrame(const uint8_t* data) {
 }
 
 void VideoWriterWrapper::finish() { mVid.release(); }
-}  // namespace sim
+} // namespace sim

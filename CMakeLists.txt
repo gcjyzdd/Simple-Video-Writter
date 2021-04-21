@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project(VideoWriter VERSION 1.0)
 
-set(TARGET videowriter)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
@@ -18,6 +18,8 @@ include(GenerateExportHeader)
 
 file(GLOB HEADERS ${CMAKE_CURRENT_LIST_DIR}/include/simulator/*.h)
 file(GLOB SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
+
+set(TARGET videowriter)
 
 add_library(${TARGET} SHARED ${HEADERS} ${SOURCES})
 
@@ -43,8 +45,10 @@ install(TARGETS videowriter RUNTIME DESTINATION bin)
 install(FILES include/simulator/vedeowriterAPI.h
               ${PROJECT_BINARY_DIR}/include/videowriter/VideoWriterExports.h
         DESTINATION include/videowriter)
-install(FILES ${PROJECT_BINARY_DIR}/bin/Release/opencv_videoio_ffmpeg452_64.dll
+if(WIN32)
+  install(FILES ${PROJECT_BINARY_DIR}/bin/Release/opencv_videoio_ffmpeg452_64.dll
         DESTINATION bin)
+endif()
 
 install(
   EXPORT videowriterTargets

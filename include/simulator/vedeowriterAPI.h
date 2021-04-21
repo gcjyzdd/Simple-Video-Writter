@@ -6,16 +6,19 @@
 extern "C" {
 #endif
 
-typedef struct VideoWriter_t* VideoWriterHandle;
+typedef struct VideoWriter_t *VideoWriterHandle;
 
-VideoWriterHandle VIDEOWRITER_API videoWriterCreate(const char* fileName,
+VideoWriterHandle VIDEOWRITER_API videoWriterCreate(const char *fileName,
                                                     int width, int height,
-                                                    int fps, int* err);
+                                                    int fps, int *err);
 
 void VIDEOWRITER_API videoWriterDestroy(VideoWriterHandle handle);
 
 int VIDEOWRITER_API videoWriterAddFrame(VideoWriterHandle handle,
-                                        const char* data);
+                                        const char *data);
+
+int VIDEOWRITER_API videoWriterAddFrameFlipY(VideoWriterHandle handle,
+                                             const char *data);
 
 int VIDEOWRITER_API videoWriterFinishVideo(VideoWriterHandle handle);
 
