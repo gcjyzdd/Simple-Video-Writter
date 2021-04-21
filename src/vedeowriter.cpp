@@ -1,7 +1,7 @@
 #include "simulator/vedeowriter.h"
-#include <opencv2/core.hpp>        // Basic OpenCV structures (cv::Mat)
-#include <opencv2/highgui.hpp>  // Video write
 #include <cstring>
+#include <opencv2/core.hpp>     // Basic OpenCV structures (cv::Mat)
+#include <opencv2/highgui.hpp>  // Video write
 
 namespace {
 std::ofstream logFile;
@@ -20,12 +20,12 @@ void Debug(const std::string& str, int err) {
 namespace sim {
 using namespace std;
 
-VideoWriterWrapper::VideoWriterWrapper(const std::string& filename, int width, int height, int fps)
-  : mFilename{filename}
-  , mWidth{width}
-  , mHeight{height} {
-  mVid =
-      std::make_unique<cv::VideoWriter>(mFilename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, cv::Size(width, height));
+VideoWriterWrapper::VideoWriterWrapper(const std::string& filename, int width,
+                                       int height, int fps)
+    : mWidth{width}, mHeight{height}, mFilename{filename} {
+  mVid = std::make_unique<cv::VideoWriter>(
+      mFilename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps,
+      cv::Size(width, height));
   if (!mVid->isOpened()) {
     Debug("Error opening video stream or file", 1);
   }
@@ -40,15 +40,14 @@ void VideoWriterWrapper::addFrame(const uint8_t* data) {
   for (size_t i = 0; i < mHeight; ++i)
     for (size_t j = 0; j < mWidth; ++j) {
       base = 3 * ((mHeight - 1 - i) * mWidth + j);
-      mMatBuf->at<cv::Vec3b>(i, j) = cv::Vec3b{data[base + 2], data[base + 1], data[base]};
+      mMatBuf->at<cv::Vec3b>(i, j) =
+          cv::Vec3b{data[base + 2], data[base + 1], data[base]};
     }
-  // cv::Mat mat(cv::Size(mWidth, mHeight), CV_8UC3, data, cv::Mat::AUTO_STEP)
+
   // imgcodecs required
-  // cv::imwrite(cv::String("aa.png"), mat)
+  // cv::imwrite(cv::String("aa.png"), *mMatBuf)
   mVid->write(*mMatBuf);
 }
 
-void VideoWriterWrapper::finish() {
-  mVid.release();
-}
+void VideoWriterWrapper::finish() { mVid.release(); }
 }  // namespace sim
