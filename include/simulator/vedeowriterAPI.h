@@ -1,6 +1,6 @@
 #ifndef VIDEO_WRITER_H_
 #define VIDEO_WRITER_H_
-#include "VideoWriterExports.h"
+#include "videowriter/VideoWriterExports.h"
 
 #ifdef __cplusplus
 extern "C" {

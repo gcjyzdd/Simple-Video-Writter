@@ -24,17 +24,30 @@ add_library(${TARGET} SHARED ${HEADERS} ${SOURCES})
 string(TOUPPER "${TARGET}_API" export_api)
 generate_export_header(
   ${TARGET} EXPORT_MACRO_NAME ${export_api} EXPORT_FILE_NAME
-  ${PROJECT_BINARY_DIR}/include/VideoWriterExports.h)
+  ${PROJECT_BINARY_DIR}/include/videowriter/VideoWriterExports.h)
 
 target_link_libraries(${TARGET} PRIVATE opencv_core opencv_highgui
                                         opencv_videoio)
 
 target_include_directories(
   ${TARGET}
-  PUBLIC include ${PROJECT_BINARY_DIR}/include
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+         $<INSTALL_INTERFACE:include>
   PRIVATE ext/opencv/modules/core/include ext/opencv/modules/highgui/include
           ext/opencv/modules/imgcodecs/include
           ext/opencv/modules/videoio/include ${CMAKE_BINARY_DIR})
+
+install(TARGETS videowriter DESTINATION lib EXPORT videowriterTargets)
+install(TARGETS videowriter RUNTIME DESTINATION bin)
+install(FILES include/simulator/vedeowriterAPI.h
+              ${PROJECT_BINARY_DIR}/include/VideoWriterExports.h
+        DESTINATION include/videowriter)
+
+install(
+  EXPORT videowriterTargets
+  FILE videowriterTargets.cmake
+  DESTINATION lib/cmake)
 
 add_executable(demoVideo test/main.cpp)
 target_link_libraries(demoVideo videowriter)
