@@ -41,7 +41,7 @@ target_include_directories(
 install(TARGETS videowriter DESTINATION lib EXPORT videowriterTargets)
 install(TARGETS videowriter RUNTIME DESTINATION bin)
 install(FILES include/simulator/vedeowriterAPI.h
-              ${PROJECT_BINARY_DIR}/include/VideoWriterExports.h
+              ${PROJECT_BINARY_DIR}/include/videowriter/VideoWriterExports.h
         DESTINATION include/videowriter)
 install(FILES ${PROJECT_BINARY_DIR}/bin/Release/opencv_videoio_ffmpeg452_64.dll
         DESTINATION bin)
