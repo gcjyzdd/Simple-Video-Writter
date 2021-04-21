@@ -23,9 +23,10 @@ using namespace std;
 VideoWriterWrapper::VideoWriterWrapper(const std::string& filename, int width,
                                        int height, int fps)
     : mWidth{width}, mHeight{height}, mFilename{filename} {
-  mVid = std::make_unique<cv::VideoWriter>(
-      mFilename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps,
-      cv::Size(width, height));
+  // int fourcc = cv::VideoWriter::fourcc('X', '2', '6', '4');
+  int fourcc = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
+  mVid = std::make_unique<cv::VideoWriter>(mFilename, fourcc, fps,
+                                           cv::Size(width, height));
   if (!mVid->isOpened()) {
     Debug("Error opening video stream or file", 1);
   }

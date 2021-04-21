@@ -4,6 +4,12 @@ project(VideoWriter VERSION 1.0)
 
 set(TARGET videowriter)
 
+if(WIN32)
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
+set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(ext/opencv ${CMAKE_BINARY_DIR}/opencv EXCLUDE_FROM_ALL)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
