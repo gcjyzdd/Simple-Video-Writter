@@ -43,11 +43,38 @@ install(TARGETS videowriter RUNTIME DESTINATION bin)
 install(FILES include/simulator/vedeowriterAPI.h
               ${PROJECT_BINARY_DIR}/include/VideoWriterExports.h
         DESTINATION include/videowriter)
+install(FILES ${PROJECT_BINARY_DIR}/bin/Release/opencv_videoio_ffmpeg452_64.dll
+        DESTINATION bin)
 
 install(
   EXPORT videowriterTargets
   FILE videowriterTargets.cmake
-  DESTINATION lib/cmake)
+  DESTINATION lib/cmake/videowriter)
+
+include(CMakePackageConfigHelpers)
+# generate the config file that is includes the exports
+configure_package_config_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/videowriterConfig.cmake" INSTALL_DESTINATION
+  "lib/cmake/example" NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+# generate the version file for the config file
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/videowriterConfigVersion.cmake"
+  VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+  COMPATIBILITY AnyNewerVersion)
+
+# install the configuration file
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/videowriterConfig.cmake
+        DESTINATION lib/cmake/videowriter)
+# project to also be used from a build directory
+export(EXPORT videowriterTargets
+       FILE "${CMAKE_CURRENT_BINARY_DIR}/videowriterTargets.cmake")
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_LIST_DIR}/LICENSE")
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+include(CPack)
 
 add_executable(demoVideo test/main.cpp)
 target_link_libraries(demoVideo videowriter)
