@@ -6,11 +6,12 @@ struct VideoWriter_t {
 };
 
 VideoWriterHandle videoWriterCreate(const char *fileName, int width, int height,
-                                    int fps, int *err) {
+                                    int channel, int fps, int *err) {
   VideoWriterHandle handle = new VideoWriter_t();
 
   try {
-    handle->data = new sim::VideoWriterWrapper(fileName, width, height, fps);
+    handle->data =
+        new sim::VideoWriterWrapper(fileName, width, height, channel, fps);
   } catch (std::system_error &) {
     *err = 1;
   }

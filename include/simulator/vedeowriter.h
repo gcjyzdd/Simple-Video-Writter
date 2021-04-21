@@ -16,7 +16,8 @@ namespace sim {
 class VideoWriterWrapper {
 public:
   VideoWriterWrapper(const std::string &filename, int width, int height,
-                     int fps);
+                     int channel, int fps);
+
   ~VideoWriterWrapper();
 
   void addFrame(const uint8_t *data);
@@ -31,6 +32,7 @@ private:
 
   int mWidth;
   int mHeight;
+  int mChannel;
   int frameCounter;
   int fps;
   std::string mFilename;

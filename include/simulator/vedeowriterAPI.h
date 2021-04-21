@@ -10,7 +10,8 @@ typedef struct VideoWriter_t *VideoWriterHandle;
 
 VideoWriterHandle VIDEOWRITER_API videoWriterCreate(const char *fileName,
                                                     int width, int height,
-                                                    int fps, int *err);
+                                                    int channel, int fps,
+                                                    int *err);
 
 void VIDEOWRITER_API videoWriterDestroy(VideoWriterHandle handle);
 

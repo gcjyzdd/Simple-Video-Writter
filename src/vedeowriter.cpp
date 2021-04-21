@@ -23,8 +23,8 @@ namespace sim {
 using namespace std;
 
 VideoWriterWrapper::VideoWriterWrapper(const std::string &filename, int width,
-                                       int height, int fps)
-    : mWidth{width}, mHeight{height}, mFilename{filename} {
+                                       int height, int channel, int fps)
+    : mWidth{width}, mHeight{height}, mChannel{channel}, mFilename{filename} {
   // int fourcc = cv::VideoWriter::fourcc('X', '2', '6', '4');
   int fourcc = cv::VideoWriter::fourcc('M', 'J', 'P', 'G');
   mVid = std::make_unique<cv::VideoWriter>(mFilename, fourcc, fps,
@@ -40,24 +40,43 @@ VideoWriterWrapper::~VideoWriterWrapper() {}
 void VideoWriterWrapper::addFrame(const uint8_t *data) {
   size_t base;
   // rgb to bgr
-  for (size_t i = 0; i < mHeight; ++i)
-    for (size_t j = 0; j < mWidth; ++j) {
-      base = 3 * (i * mWidth + j);
-      mMatBuf->at<cv::Vec3b>(i, j) =
-          cv::Vec3b{data[base + 2], data[base + 1], data[base]};
-    }
+  if (mChannel == 1) {
+    for (size_t i = 0; i < mHeight; ++i)
+      for (size_t j = 0; j < mWidth; ++j) {
+        base = i * mWidth + j;
+        mMatBuf->at<cv::Vec3b>(i, j) =
+            cv::Vec3b{data[base], data[base], data[base]};
+      }
+  } else {
+    for (size_t i = 0; i < mHeight; ++i)
+      for (size_t j = 0; j < mWidth; ++j) {
+        base = mChannel * (i * mWidth + j);
+        mMatBuf->at<cv::Vec3b>(i, j) =
+            cv::Vec3b{data[base + 2], data[base + 1], data[base]};
+      }
+  }
+
   mVid->write(*mMatBuf);
 }
 
 void VideoWriterWrapper::addFrameFlipY(const uint8_t *data) {
   size_t base;
   // flip up side down and rgb to bgr
-  for (size_t i = 0; i < mHeight; ++i)
-    for (size_t j = 0; j < mWidth; ++j) {
-      base = 3 * ((mHeight - 1 - i) * mWidth + j);
-      mMatBuf->at<cv::Vec3b>(i, j) =
-          cv::Vec3b{data[base + 2], data[base + 1], data[base]};
-    }
+  if (mChannel == 1) {
+    for (size_t i = 0; i < mHeight; ++i)
+      for (size_t j = 0; j < mWidth; ++j) {
+        base = (mHeight - 1 - i) * mWidth + j;
+        mMatBuf->at<cv::Vec3b>(i, j) =
+            cv::Vec3b{data[base], data[base], data[base]};
+      }
+  } else {
+    for (size_t i = 0; i < mHeight; ++i)
+      for (size_t j = 0; j < mWidth; ++j) {
+        base = mChannel * ((mHeight - 1 - i) * mWidth + j);
+        mMatBuf->at<cv::Vec3b>(i, j) =
+            cv::Vec3b{data[base + 2], data[base + 1], data[base]};
+      }
+  }
 
   // imgcodecs required
   // cv::imwrite(cv::String("aa.png"), *mMatBuf)
