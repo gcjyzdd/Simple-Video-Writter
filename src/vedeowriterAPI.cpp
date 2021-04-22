@@ -21,7 +21,11 @@ VideoWriterHandle videoWriterCreate(const char *fileName, int width, int height,
   return handle;
 }
 
-void videoWriterDestroy(VideoWriterHandle handle) { delete handle->data; }
+void videoWriterDestroy(VideoWriterHandle handle) {
+  delete handle->data;
+  delete handle;
+  handle = nullptr;
+}
 
 int videoWriterAddFrame(VideoWriterHandle handle, const char *data) {
   handle->data->addFrame((const uint8_t *)data);
@@ -30,6 +34,16 @@ int videoWriterAddFrame(VideoWriterHandle handle, const char *data) {
 
 int videoWriterAddFrameFlipY(VideoWriterHandle handle, const char *data) {
   handle->data->addFrameFlipY((const uint8_t *)data);
+  return 0;
+}
+
+int videoWriterAddFrameBGR(VideoWriterHandle handle, const char *data) {
+  handle->data->addFrameBGR((const uint8_t *)data);
+  return 0;
+}
+
+int videoWriterAddFrameBGRFlipY(VideoWriterHandle handle, const char *data) {
+  handle->data->addFrameBGRFlipY((const uint8_t *)data);
   return 0;
 }
 
