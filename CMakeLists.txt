@@ -5,11 +5,12 @@ project(VideoWriter VERSION 1.0)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(WIN32)
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
 endif()
 
 set(BUILD_SHARED_LIBS OFF)
+set(BUILD_WITH_STATIC_CRT OFF)
 add_subdirectory(ext/opencv ${CMAKE_BINARY_DIR}/opencv EXCLUDE_FROM_ALL)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -46,8 +47,9 @@ install(FILES include/simulator/vedeowriterAPI.h
               ${PROJECT_BINARY_DIR}/include/videowriter/VideoWriterExports.h
         DESTINATION include/videowriter)
 if(WIN32)
-  install(FILES ${PROJECT_BINARY_DIR}/bin/Release/opencv_videoio_ffmpeg452_64.dll
-        DESTINATION bin)
+  install(
+    FILES ${PROJECT_BINARY_DIR}/bin/Release/opencv_videoio_ffmpeg452_64.dll
+    DESTINATION bin)
 endif()
 
 install(
