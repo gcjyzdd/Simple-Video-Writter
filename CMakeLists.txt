@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(VideoWriter VERSION 1.0)
+project(VideoWriter VERSION 1.3)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -41,7 +41,10 @@ target_include_directories(
           ext/opencv/modules/imgcodecs/include
           ext/opencv/modules/videoio/include ${CMAKE_BINARY_DIR})
 
-install(TARGETS videowriter DESTINATION lib EXPORT videowriterTargets)
+install(
+  TARGETS videowriter
+  DESTINATION lib
+  EXPORT videowriterTargets)
 install(TARGETS videowriter RUNTIME DESTINATION bin)
 install(FILES include/simulator/vedeowriterAPI.h
               ${PROJECT_BINARY_DIR}/include/videowriter/VideoWriterExports.h
@@ -61,8 +64,9 @@ include(CMakePackageConfigHelpers)
 # generate the config file that is includes the exports
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/videowriterConfig.cmake" INSTALL_DESTINATION
-  "lib/cmake/example" NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+  "${CMAKE_CURRENT_BINARY_DIR}/videowriterConfig.cmake"
+  INSTALL_DESTINATION "lib/cmake/example"
+  NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 # generate the version file for the config file
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/videowriterConfigVersion.cmake"

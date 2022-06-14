@@ -32,3 +32,12 @@ int main() {
   return 0;
 }
 ```
+
+## Create conan packages
+
+``` sh
+mkdir buildRelease
+conan install . --install-folder=buildRelease
+conan build . --source-folder=. --build-folder=buildRelease
+conan package -bf=buildRelease .
+```
